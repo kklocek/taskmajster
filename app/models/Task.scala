@@ -26,8 +26,8 @@ object Priority {
 
 class DoabilityInterval(val begin: Option[DateTime], val end: Option[DateTime])
 
-sealed abstract class Task(private var _id: Option[Long], val kind: String, var name: String, var priority: Priority, val createdDate: DateTime) {
-  def id = _id
+
+sealed abstract class Task(var id: Option[Long], val kind: String, var name: String, var priority: Priority, val createdDate: DateTime, val duration: (Int, Int) = (1, 30)) {
   def nextDoability(lastTimeDone: Option[DateTime] = None): DoabilityInterval
   def extraData: String
 }

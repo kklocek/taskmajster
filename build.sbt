@@ -12,3 +12,10 @@ libraryDependencies ++= Seq(
   cache,
   ws
 )
+
+libraryDependencies ++= Seq(
+  "com.google.api-client" % "google-api-client" % "1.19.1",
+  "com.google.apis" % "google-api-services-calendar" % "v3-rev114-1.19.1",
+  "org.mnode.ical4j" % "ical4j" % "1.0.6"
+)
+

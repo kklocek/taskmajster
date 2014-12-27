@@ -6,6 +6,7 @@
 GET         /                          controllers.Application.index
 GET         /tasks                     controllers.Tasks.index
 GET         /tasks/add                 controllers.Tasks.add
+
 GET         /tasks/add/longterm        controllers.Tasks.addLongtermForm
 POST        /tasks/add/longterm        controllers.Tasks.addLongterm
 GET         /tasks/add/current         controllers.Tasks.addCurrentForm
