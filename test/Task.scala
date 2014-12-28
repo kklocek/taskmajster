@@ -1,4 +1,4 @@
-import models._
+import models.tasks._
 import org.joda.time.{Period, DateTime}
 import org.junit.runner._
 import org.specs2.mutable._
@@ -18,71 +18,73 @@ class TaskTest extends Specification {
 
     "have proper kind" in new WithApplication {
       {
-        val x: Task = new DeadlineTask(None, "Dummy task", Priority.normal, DateTime.now(), new DateTime())
+        val x: Task = new DeadlineTask("Dummy task", Priority.normal, DateTime.now, true, Period.hours(1))
         x.kind must equalTo("deadline")
       }
       {
-        val x: Task = new FrequentTask(None, "Dummy task", Priority.normal, DateTime.now(), new Frequency(DateTime.now, Period.days(10)))
+        val x: Task = new FrequentTask("Dummy task", Priority.normal, new Frequency(DateTime.now, Period.days(10)), true, Period.hours(1))
         x.kind must equalTo("frequent")
       }
       {
-        val x: Task = new CurrentTask(None, "Dummy task", Priority.normal, DateTime.now())
+        val x: Task = new CurrentTask("Dummy task", Priority.normal, true, Period.hours(1))
         x.kind must equalTo("current")
       }
       {
-        val x: Task = new LongtermTask(None, "Dummy task", Priority.normal, DateTime.now())
+        val x: Task = new LongtermTask("Dummy task", Priority.normal)
         x.kind must equalTo("longterm")
       }
     }
 
     "have proper priority" in new WithApplication {
       {
-        val x: Task = new DeadlineTask(None, "Dummy task", Priority.high, DateTime.now(), new DateTime())
+        val x: Task = new DeadlineTask("Dummy task", Priority.high, DateTime.now, true, Period.hours(1))
         x.priority must equalTo(Priority.high)
       }
       {
-        val x: Task = new FrequentTask(None, "Dummy task", Priority.high, DateTime.now(), new Frequency(DateTime.now, Period.days(10)))
+        val x: Task = new FrequentTask("Dummy task", Priority.high, new Frequency(DateTime.now, Period.days(10)), true, Period.hours(1))
         x.priority must equalTo(Priority.high)
       }
       {
-        val x: Task = new CurrentTask(None, "Dummy task", Priority.low, DateTime.now())
+        val x: Task = new CurrentTask("Dummy task", Priority.low, true, Period.hours(1))
         x.priority must equalTo(Priority.low)
       }
       {
-        val x: Task = new LongtermTask(None, "Dummy task", Priority.low, DateTime.now())
+        val x: Task = new LongtermTask("Dummy task", Priority.low)
         x.priority must equalTo(Priority.low)
       }
     }
 
     "work properly in pattern matching" in new WithApplication {
       {
-        val x: Task = new DeadlineTask(None, "Dummy task", Priority.high, DateTime.now(), new DateTime())
+        val x: Task = new DeadlineTask("Dummy task", Priority.high, DateTime.now, true, Period.hours(1))
         (x match {
           case y: DeadlineTask => true
           case _ => false
         }) must beTrue
       }
       {
-        val x: Task = new FrequentTask(None, "Dummy task", Priority.high, DateTime.now(), new Frequency(DateTime.now, Period.days(10)))
+        val x: Task = new FrequentTask("Dummy task", Priority.high, new Frequency(DateTime.now, Period.days(10)), true, Period.hours(1))
         (x match {
           case y: FrequentTask => true
           case _ => false
         }) must beTrue
       }
       {
-        val x: Task = new CurrentTask(None, "Dummy task", Priority.low, DateTime.now())
+        val x: Task = new CurrentTask("Dummy task", Priority.low, true, Period.hours(1))
         (x match {
           case y: CurrentTask => true
           case _ => false
         }) must beTrue
       }
       {
-        val x: Task = new LongtermTask(None, "Dummy task", Priority.low, DateTime.now())
+        val x: Task = new LongtermTask("Dummy task", Priority.low)
         (x match {
           case y: LongtermTask => true
           case _ => false
         }) must beTrue
       }
     }
+
+    //TODO: tests for custom properties of concrete tasks
   }
 }

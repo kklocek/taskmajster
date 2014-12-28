@@ -1,0 +1,19 @@
+@(tasks: Seq[models.tasks.Task])
+
+@main("Task list") {
+
+    <h1>Task list</h1>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+    @for(task <- tasks) {
+        <tr>
+            <td>@task.id</td>
+            <td>@task.name</td>
+        </tr>
+    }
+    </table>
+
+}
