@@ -1,9 +1,8 @@
 @(tasks: Seq[models.tasks.Task])
 
-@main("Task list") {
+@main("Task list", "tasks") {
 
-    <h1>Task list</h1>
-    <table>
+    <table class="ink-table alternating hover">
         <tr>
             <th>Id</th>
             <th>Name</th>

@@ -1,0 +1,36 @@
+@main("Calendar", "calendar") {
+
+    <div id="calendar" style="max-width:900px; margin:auto"></div>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            defaultDate: new Date(),
+            editable: true,
+            lang: 'en',
+            eventLimit: true, // allow "more" link when too many events
+            events: [
+                {
+                    title: 'Now',
+                    start: new Date( )
+                },
+                {
+                    title: 'Call',
+                    start: '2015-01-11T22:07:00',
+                    end: '2015-01-11T23:57:00'
+                },
+                {
+                    title: 'End of semester',
+                    start: '2015-01-30'
+                }
+            ]
+        });
+    });
+    </script>
+
+}
