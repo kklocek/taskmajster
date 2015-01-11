@@ -6,13 +6,19 @@
         <tr>
             <th>Id</th>
             <th>Name</th>
+            <th>Priority</th>
+            <th>Actions</th>
         </tr>
     @for(task <- tasks) {
         <tr>
             <td>@task.id</td>
             <td>@task.name</td>
+            <td>@task.priority</td>
+            <td><a href="@routes.Tasks.delete(task.id.getOrElse(0))">Delete</a></td>
         </tr>
     }
     </table>
+
+    <a href="@routes.Tasks.add" class="ink-button blue">Add task</a>
 
 }

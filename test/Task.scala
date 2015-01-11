@@ -85,6 +85,6 @@ class TaskTest extends Specification {
       }
     }
 
-    //TODO: tests for custom properties of concrete tasks
+    //TODO: tests for custom properties of concrete task
   }
 }

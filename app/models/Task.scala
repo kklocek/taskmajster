@@ -15,6 +15,10 @@ object Priority {
 
   def stringify(value: Int) = priorities(value)
 
+  def possibleOptions(): Seq[(String, String)] = priorities.toSeq.map {
+    tuple => (tuple._1.toString, tuple._2)
+  }
+
   val low: Priority = Priority(1)
   val normal: Priority = Priority(2)
   val high: Priority = Priority(3)
@@ -160,6 +164,11 @@ class CurrentTask private[tasks] (id: Option[Long], name: String, priority: Prio
   override def extraData: String = "Buz" //TODO: encode data into string
 }
 
+object CurrentTask {
+  def apply(name: String, priority: Priority, continuous: Boolean, length: Period) = new CurrentTask(name, priority, continuous, length)
+  def unapply(task: CurrentTask): Option[(String, Priority, Boolean, Period)] = None //TODO
+}
+
 
 class LongtermTask private[tasks] (id: Option[Long], name: String, priority: Priority, createdDate: DateTime)
   extends Task(id, "longterm", name, priority, createdDate) {
@@ -170,4 +179,9 @@ class LongtermTask private[tasks] (id: Option[Long], name: String, priority: Pri
 
   override def nextDoability(lastTimeDone: Option[DateTime]) = new DoabilityInterval(Some(createdDate), None)
   override def extraData: String = ""
+}
+
+object LongtermTask {
+  def apply(name: String, priority: Priority) = new LongtermTask(name, priority)
+  def unapply(task: LongtermTask): Option[(String, Priority)] = None //TODO
 }

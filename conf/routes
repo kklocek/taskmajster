@@ -3,10 +3,16 @@
 # ~~~~
 
 # Home page
-GET        /                    controllers.Application.index
-GET        /tasks               controllers.Tasks.index
-GET        /calendar            controllers.Calendar.index
-GET        /about               controllers.About.index
+GET         /                          controllers.Application.index
+GET         /tasks                     controllers.Tasks.index
+GET         /tasks/add                 controllers.Tasks.add
+GET         /tasks/add/longterm        controllers.Tasks.addLongtermForm
+POST        /tasks/add/longterm        controllers.Tasks.addLongterm
+GET         /tasks/add/current         controllers.Tasks.addCurrentForm
+POST        /tasks/add/current         controllers.Tasks.addCurrent
+GET         /tasks/delete/:id          controllers.Tasks.delete(id: Long)
+GET         /calendar                  controllers.Calendar.index
+GET         /about                     controllers.About.index
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file        controllers.Assets.at(path="/public", file)
+GET         /assets/*file              controllers.Assets.at(path="/public", file)
