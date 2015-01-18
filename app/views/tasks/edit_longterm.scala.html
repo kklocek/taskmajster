@@ -1,0 +1,12 @@
+@(id: Option[Long], form: Form[models.tasks.LongtermTask])(implicit flash: Flash)
+
+@main("Longterm task", "tasks") {
+
+    @helper.form(action = id.map(routes.Tasks.edit(_)).getOrElse(routes.Tasks.addLongterm()), 'class -> "ink-form") {
+        @helper.inputText(form("name"))
+        @helper.select(form("priority"), models.tasks.Priority.possibleOptions)
+
+        <button class="ink-button green" type="submit">Add longterm task</button>
+    }
+
+}

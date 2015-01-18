@@ -1,4 +1,4 @@
-@(tasks: Seq[models.tasks.Task])
+@(tasks: Seq[models.tasks.Task])(implicit flash: Flash)
 
 @main("Task list", "tasks") {
 
@@ -14,7 +14,7 @@
             <td>@task.id</td>
             <td>@task.name</td>
             <td>@task.priority</td>
-            <td><a href="@routes.Tasks.delete(task.id.getOrElse(0))">Delete</a></td>
+            <td><a href="@routes.Tasks.editForm(task.id.getOrElse(0))">Edit</a> <a href="@routes.Tasks.delete(task.id.get)">Delete</a></td>
         </tr>
     }
     </table>

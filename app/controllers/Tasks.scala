@@ -13,11 +13,11 @@ import scala.util.Try
 
 object Tasks extends Controller {
 
-  def index = Action {
+  def index = Action { implicit request =>
     Ok(views.html.tasks.list(Task.getAll))
   }
 
-  def add = Action {
+  def add = Action { implicit request =>
     Ok(views.html.tasks.add())
   }
 
@@ -44,21 +44,67 @@ object Tasks extends Controller {
   }
 
 
+  val deadlineForm = Form(mapping(
+    "name" -> nonEmptyText,
+    "priority" -> of[Priority],
+    "deadline" -> jodaDate,
+    "continuous" -> boolean,
+    "length" -> of[Period]
+  )(DeadlineTask.apply)(DeadlineTask.unapply))
+
+  def addDeadlineForm = Action { implicit request =>
+    Ok(views.html.tasks.edit_deadline(None, deadlineForm))
+  }
+
+  def addDeadline = Action { implicit request =>
+    deadlineForm.bindFromRequest.fold(
+      formWithErrors => Ok(views.html.tasks.edit_deadline(None, formWithErrors)),
+      value => {
+        Task.insert(value)
+        Redirect(routes.Tasks.index).flashing("success" -> "Added new task")
+      }
+    )
+  }
+
+
+  val frequentForm = Form(mapping(
+    "name" -> nonEmptyText,
+    "priority" -> of[Priority],
+    "period" -> of[Period],
+    "continuous" -> boolean,
+    "length" -> of[Period]
+  )(FrequentTask.apply)(FrequentTask.unapply))
+
+  def addFrequentForm = Action { implicit request =>
+    Ok(views.html.tasks.edit_frequent(None, frequentForm))
+  }
+
+  def addFrequent = Action { implicit request =>
+    frequentForm.bindFromRequest.fold(
+      formWithErrors => Ok(views.html.tasks.edit_frequent(None, formWithErrors)),
+      value => {
+        Task.insert(value)
+        Redirect(routes.Tasks.index).flashing("success" -> "Added new task")
+      }
+    )
+  }
+
+
   val longtermForm = Form(mapping(
     "name" -> nonEmptyText,
     "priority" -> of[Priority]
   )(LongtermTask.apply)(LongtermTask.unapply))
 
-  def addLongtermForm = Action {
-    Ok(views.html.tasks.add_longterm(longtermForm))
+  def addLongtermForm = Action { implicit request =>
+    Ok(views.html.tasks.edit_longterm(None, longtermForm))
   }
 
   def addLongterm = Action { implicit request =>
     longtermForm.bindFromRequest.fold(
-      formWithErrors => Ok(views.html.tasks.add_longterm(formWithErrors)),
+      formWithErrors => Ok(views.html.tasks.edit_longterm(None, formWithErrors)),
       value => {
-        Task.store(value)
-        Redirect(routes.Tasks.index)
+        Task.insert(value)
+        Redirect(routes.Tasks.index).flashing("success" -> "Added new task")
       }
     )
   }
@@ -71,23 +117,88 @@ object Tasks extends Controller {
     "length" -> of[Period]
   )(CurrentTask.apply)(CurrentTask.unapply))
 
-  def addCurrentForm = Action {
-    Ok(views.html.tasks.add_current(currentForm))
+  def addCurrentForm = Action { implicit request =>
+    Ok(views.html.tasks.edit_current(None, currentForm))
   }
 
   def addCurrent = Action { implicit request =>
     currentForm.bindFromRequest.fold(
-      formWithErrors => Ok(views.html.tasks.add_current(formWithErrors)),
+      formWithErrors => Ok(views.html.tasks.edit_current(None, formWithErrors)),
       value => {
-        Task.store(value)
-        Redirect(routes.Tasks.index)
+        Task.insert(value)
+        Redirect(routes.Tasks.index).flashing("success" -> "Added new task")
       }
     )
   }
 
 
-  def delete(id: Long) = Action {
-    Redirect(routes.Tasks.index)
+  def edit(id: Long) = Action { implicit request =>
+    Task.get(id) match {
+      case Some(task) => {
+        task match {
+          case deadlineTask: DeadlineTask => {
+            deadlineForm.bindFromRequest.fold(
+              formWithErrors => Ok(views.html.tasks.edit_deadline(task.id, deadlineForm.fill(deadlineTask))),
+              value => {
+                Task.update(deadlineTask.id.get, value)
+                Redirect(routes.Tasks.index).flashing("success" -> "Task updated")
+              }
+            )
+          }
+          case frequentTask: FrequentTask => {
+            frequentForm.bindFromRequest.fold(
+              formWithErrors => Ok(views.html.tasks.edit_frequent(task.id, frequentForm.fill(frequentTask))),
+              value => {
+                Task.update(frequentTask.id.get, value)
+                Redirect(routes.Tasks.index).flashing("success" -> "Task updated")
+              }
+            )
+          }
+          case currentTask: CurrentTask => {
+            currentForm.bindFromRequest.fold(
+              formWithErrors => Ok(views.html.tasks.edit_current(task.id, currentForm.fill(currentTask))),
+              value => {
+                Task.update(currentTask.id.get, value)
+                Redirect(routes.Tasks.index).flashing("success" -> "Task updated")
+              }
+            )
+          }
+          case longtermTask: LongtermTask => {
+            longtermForm.bindFromRequest.fold(
+              formWithErrors => Ok(views.html.tasks.edit_longterm(task.id, longtermForm.fill(longtermTask))),
+              value => {
+                Task.update(longtermTask.id.get, value)
+                Redirect(routes.Tasks.index).flashing("success" -> "Task updated")
+              }
+            )
+          }
+        }
+      }
+      case None =>
+        Redirect(routes.Tasks.index).flashing("error" -> "Task does not exist")
+    }
+  }
+
+
+  def editForm(id: Long) = Action { implicit request =>
+    Task.get(id) match {
+      case Some(task) => {
+        task match {
+          case deadlineTask: DeadlineTask => Ok(views.html.tasks.edit_deadline(deadlineTask.id, deadlineForm.fill(deadlineTask)))
+          case frequentTask: FrequentTask => Ok(views.html.tasks.edit_frequent(frequentTask.id, frequentForm.fill(frequentTask)))
+          case  currentTask:  CurrentTask => Ok(views.html.tasks.edit_current ( currentTask.id,  currentForm.fill( currentTask)))
+          case longtermTask: LongtermTask => Ok(views.html.tasks.edit_longterm(longtermTask.id, longtermForm.fill(longtermTask)))
+        }
+      }
+      case None =>
+        Redirect(routes.Tasks.index).flashing("error" -> "Task does not exist")
+    }
+  }
+
+
+  def delete(id: Long) = Action { implicit request =>
+    Task.delete(id)
+    Redirect(routes.Tasks.index).flashing("success" -> "Deleted task")
   }
 
 }

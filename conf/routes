@@ -10,6 +10,12 @@ GET         /tasks/add/longterm        controllers.Tasks.addLongtermForm
 POST        /tasks/add/longterm        controllers.Tasks.addLongterm
 GET         /tasks/add/current         controllers.Tasks.addCurrentForm
 POST        /tasks/add/current         controllers.Tasks.addCurrent
+GET         /tasks/add/deadline        controllers.Tasks.addDeadlineForm
+POST        /tasks/add/deadline        controllers.Tasks.addDeadline
+GET         /tasks/add/frequent        controllers.Tasks.addFrequentForm
+POST        /tasks/add/frequent        controllers.Tasks.addFrequent
+GET         /tasks/edit/:id            controllers.Tasks.editForm(id: Long)
+POST        /tasks/edit/:id            controllers.Tasks.edit(id: Long)
 GET         /tasks/delete/:id          controllers.Tasks.delete(id: Long)
 GET         /calendar                  controllers.Calendar.index
 GET         /about                     controllers.About.index

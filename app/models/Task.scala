@@ -24,8 +24,6 @@ object Priority {
   val high: Priority = Priority(3)
 }
 
-class Frequency(val begin: DateTime, val period: Period)
-
 class DoabilityInterval(val begin: Option[DateTime], val end: Option[DateTime])
 
 sealed abstract class Task(private var _id: Option[Long], val kind: String, var name: String, var priority: Priority, val createdDate: DateTime) {
@@ -47,65 +45,67 @@ object Task {
     }
   }
 
+  private def taskFromRow(row: anorm.Row) = {
+    Task(row[Long]("id"), row[String]("kind"), row[String]("name"), Priority(row[Int]("priority")), row[DateTime]("createDate"), row[String]("data"))
+  }
+
   import anorm.SQL
   import play.api.Play.current
   def getAll: List[Task] = {
-    DB.withConnection {
-      implicit connection => {
-        SQL("SELECT * FROM tasks")().map( row =>
-          Task(row[Long]("id"), row[String]("kind"), row[String]("name"), Priority(row[Int]("priority")), row[DateTime]("createDate"), row[String]("data"))
-        ).toList
+    DB.withConnection { implicit connection =>
+      SQL("SELECT * FROM tasks")().map(taskFromRow(_)).toList
+    }
+  }
+
+  def get(taskId: Long): Option[Task] = {
+    DB.withConnection { implicit connection =>
+      SQL("SELECT * FROM tasks WHERE id={id}").on(
+        "id" -> taskId
+      )().head match {
+        case row: anorm.Row => Some(taskFromRow(row))
+        //case Nil => None
       }
     }
   }
 
-  def store(task: Task): Boolean = {
-    task.id match {
-      case None => insert(task)
-      case Some(_) => update(task)
+  def insert(task: Task): Boolean = {
+    DB.withConnection { implicit connection =>
+      SQL("INSERT INTO tasks (id, kind, name, priority, createDate, data) " +
+        "VALUES ({id}, {kind}, {name}, {priority}, {createDate}, {data})").on(
+          "id" -> task.id,
+          "kind" -> task.kind,
+          "name" -> task.name,
+          "priority" -> task.priority.value,
+          "createDate" -> task.createdDate,
+          "data" -> task.extraData
+        ).executeUpdate() == 1 //TODO: store id in Task
     }
   }
 
-  private def insert(task: Task): Boolean = {
-    DB.withConnection {
-      implicit connection => {
-        SQL("INSERT INTO tasks (id, kind, name, priority, createDate, data) " +
-          "VALUES ({id}, {kind}, {name}, {priority}, {createDate}, {data})").on(
-            "id" -> task.id,
-            "kind" -> task.kind,
-            "name" -> task.name,
-            "priority" -> task.priority.value,
-            "createDate" -> task.createdDate,
-            "data" -> task.extraData
-          ).executeUpdate() == 1 //TODO: store id in Task
-      }
+  def update(taskId: Long, task: Task): Boolean = {
+    DB.withConnection { implicit connection =>
+      SQL("UPDATE tasks SET kind={kind}, name={name}, priority={priority}, createDate={createDate}, data={data} " +
+        "WHERE id={id} LIMIT 1").on(
+          "id" -> taskId,
+          "kind" -> task.kind,
+          "name" -> task.name,
+          "priority" -> task.priority.value,
+          "createDate" -> task.createdDate,
+          "data" -> task.extraData //TODO: deduplicate code
+        ).executeUpdate() == 1
     }
   }
 
-  private def update(task: Task): Boolean = {
-    DB.withConnection {
-      implicit connection => {
-        SQL("UPDATE tasks SET kind={kind}, name={name}, priority={priority}, createDate={createDate}, data={data} " +
-          "WHERE id={id} LIMIT 1").on(
-            "id" -> task.id,
-            "kind" -> task.kind,
-            "name" -> task.name,
-            "priority" -> task.priority.value,
-            "createDate" -> task.createdDate,
-            "data" -> task.extraData //TODO: deduplicate code
-          ).executeUpdate() == 1
-      }
+  def delete(taskId: Long): Boolean = {
+    DB.withConnection { implicit connection =>
+      SQL("DELETE FROM tasks WHERE id={id} LIMIT 1").on(
+        "id" -> taskId
+      ).executeUpdate() == 1
     }
   }
 
   def delete(task: Task): Boolean = {
-    DB.withConnection {
-      implicit connection => {
-        SQL("DELETE FROM tasks WHERE id={id} LIMIT 1").on(
-          "id" -> task.id
-        ).executeUpdate() == 1
-      }
-    }
+    delete(task.id.get)
   }
 }
 
@@ -126,24 +126,35 @@ class DeadlineTask private[tasks] (id: Option[Long], name: String, priority: Pri
   override def extraData: String = "Foo" //TODO: encode data into string
 }
 
+object DeadlineTask {
+  def apply(name: String, priority: Priority, deadline: DateTime, continuous: Boolean, length: Period) = new DeadlineTask(name, priority, deadline, continuous, length)
+  def unapply(task: DeadlineTask): Option[(String, Priority, DateTime, Boolean, Period)] = Some((task.name, task.priority, task.deadline, task.continuous, task.length))
+}
+
+
 class FrequentTask private[tasks] (id: Option[Long], name: String, priority: Priority, createdDate: DateTime,
-                                   var frequency: Frequency, var continuous: Boolean, var length: Period)
+                                   var frequency: Period, var continuous: Boolean, var length: Period)
   extends Task(id, "frequent", name, priority, createdDate) {
 
   private[tasks] def this (id: Option[Long], name: String, priority: Priority,
                            createdDate: DateTime, extraData: String) {
-    this(id, name, priority, createdDate, new Frequency(createdDate, Period.weeks(1)), true, Period.hours(1)) //TODO: extract data from string
+    this(id, name, priority, createdDate, Period.weeks(1), true, Period.hours(1)) //TODO: extract data from string
   }
 
-  def this(name: String, priority: Priority, frequency: Frequency, continuous: Boolean, length: Period) {
+  def this(name: String, priority: Priority, frequency: Period, continuous: Boolean, length: Period) {
     this(None, name, priority, DateTime.now, frequency, continuous, length)
   }
 
   override def nextDoability(lastTimeDone: Option[DateTime]) = {
     // TODO write sensible implementation
-    new DoabilityInterval(Some(frequency.begin), Some(frequency.begin plus frequency.period))
+    new DoabilityInterval(Some(DateTime.now), Some(DateTime.now plus frequency))
   }
   override def extraData: String = "Bar" //TODO: encode data into string
+}
+
+object FrequentTask {
+  def apply(name: String, priority: Priority, frequency: Period, continuous: Boolean, length: Period) = new FrequentTask(name, priority, frequency, continuous, length)
+  def unapply(task: FrequentTask): Option[(String, Priority, Period, Boolean, Period)] = Some((task.name, task.priority, task.frequency, task.continuous, task.length))
 }
 
 
@@ -166,7 +177,7 @@ class CurrentTask private[tasks] (id: Option[Long], name: String, priority: Prio
 
 object CurrentTask {
   def apply(name: String, priority: Priority, continuous: Boolean, length: Period) = new CurrentTask(name, priority, continuous, length)
-  def unapply(task: CurrentTask): Option[(String, Priority, Boolean, Period)] = None //TODO
+  def unapply(task: CurrentTask): Option[(String, Priority, Boolean, Period)] = Some((task.name, task.priority, task.continuous, task.length))
 }
 
 
@@ -183,5 +194,5 @@ class LongtermTask private[tasks] (id: Option[Long], name: String, priority: Pri
 
 object LongtermTask {
   def apply(name: String, priority: Priority) = new LongtermTask(name, priority)
-  def unapply(task: LongtermTask): Option[(String, Priority)] = None //TODO
+  def unapply(task: LongtermTask): Option[(String, Priority)] = Some((task.name, task.priority))
 }
