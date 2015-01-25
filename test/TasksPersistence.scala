@@ -18,7 +18,7 @@ class TasksPersistence extends Specification {
     "be properly stored" in new WithApplication {
       {
         val x: Task = new DeadlineTask("Dummy task", Priority.normal, DateTime.now plusDays 3, false, Period.hours(3))
-        Task.store(x) must beTrue
+        Task.insert(x) must beTrue
         val tasks = Task.getAll
         tasks.size must equalTo(1) //TODO better matching
         val soleTask: Task = tasks(0)

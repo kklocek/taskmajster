@@ -22,7 +22,7 @@ class TaskTest extends Specification {
         x.kind must equalTo("deadline")
       }
       {
-        val x: Task = new FrequentTask("Dummy task", Priority.normal, new Frequency(DateTime.now, Period.days(10)), true, Period.hours(1))
+        val x: Task = new FrequentTask("Dummy task", Priority.normal, Period.days(10), true, Period.hours(1))
         x.kind must equalTo("frequent")
       }
       {
@@ -41,7 +41,7 @@ class TaskTest extends Specification {
         x.priority must equalTo(Priority.high)
       }
       {
-        val x: Task = new FrequentTask("Dummy task", Priority.high, new Frequency(DateTime.now, Period.days(10)), true, Period.hours(1))
+        val x: Task = new FrequentTask("Dummy task", Priority.high, Period.days(10), true, Period.hours(1))
         x.priority must equalTo(Priority.high)
       }
       {
@@ -63,7 +63,7 @@ class TaskTest extends Specification {
         }) must beTrue
       }
       {
-        val x: Task = new FrequentTask("Dummy task", Priority.high, new Frequency(DateTime.now, Period.days(10)), true, Period.hours(1))
+        val x: Task = new FrequentTask("Dummy task", Priority.high, Period.days(10), true, Period.hours(1))
         (x match {
           case y: FrequentTask => true
           case _ => false
