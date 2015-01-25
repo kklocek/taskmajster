@@ -1,5 +1,4 @@
 import models.tasks._
-
 import org.joda.time.{DateTime, Period}
 import org.junit.runner._
 import org.specs2.mutable._
@@ -20,13 +19,13 @@ class TasksPersistence extends Specification {
       {
         val x: Task = new DeadlineTask("Dummy task", Priority.normal, DateTime.now plusDays 3, false, Period.hours(3))
         Task.insert(x) must beTrue
-
         val tasks = Task.getAll
         tasks.size must equalTo(1) //TODO better matching
-        val soleTask: Task = tasks(0)
+      val soleTask: Task = tasks(0)
         soleTask.name must equalTo("Dummy task")
         soleTask.priority.value must equalTo(Priority.normal.value) //TODO override appropriate methods
 
+        Task.delete(soleTask) must beTrue
         val tasks2 = Task.getAll
         tasks2.size must equalTo(0)
       }

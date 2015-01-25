@@ -6,8 +6,7 @@ BEGIN:VEVENT
 DTSTAMP:20140930T183459Z
 DTSTART:20140926T080000
 DTEND:20140926T093000
-SUMMARY:Metody obliczeniowe w nauce i technice 1 - dr inż. M. Bubak\, D17
-  1.38 - wykład
+SUMMARY:Metody obliczeniowe w nauce i technice 1 - dr inż. M. Bubak\, D17 1.38 - wykład
 DESCRIPTION:dr inż. M. Bubak\, D17 1.38 - wykład
 RRULE:FREQ=WEEKLY;UNTIL=20150130T000000
 UID:b02cdef0-4888-4726-876c-23b9f6e6cd98
@@ -17,8 +16,7 @@ BEGIN:VEVENT
 DTSTAMP:20140930T183459Z
 DTSTART:20140924T080000
 DTEND:20140924T093000
-SUMMARY:Metody obliczeniowe w nauce i technice 1 - dr inż. W. Czech\, D17
-  3.27a - ćw
+SUMMARY:Metody obliczeniowe w nauce i technice 1 - dr inż. W. Czech\, D17 3.27a - ćw
 DESCRIPTION:dr inż. W. Czech\, D17 3.27a - ćw
 RRULE:FREQ=WEEKLY;UNTIL=20150130T000000
 UID:f88c2b65-8d1b-42bd-8c3e-0b1ea5de19c3
@@ -98,8 +96,7 @@ BEGIN:VEVENT
 DTSTAMP:20140930T183459Z
 DTSTART:20140922T125000
 DTEND:20140922T142000
-SUMMARY:Projektowanie systemów informatycznych 1 - dr inż. T. Dyduch\, D1
- 7 3.27d - lab
+SUMMARY:Projektowanie systemów informatycznych 1 - dr inż. T. Dyduch\, D17 3.27d - lab
 DESCRIPTION:dr inż. T. Dyduch\, D17 3.27d - lab
 RRULE:FREQ=WEEKLY;UNTIL=20150130T000000
 UID:2a95bc12-f0c5-48f9-9095-523853f8b4d3
@@ -109,8 +106,7 @@ BEGIN:VEVENT
 DTSTAMP:20140930T183459Z
 DTSTART:20140923T111500
 DTEND:20140923T124500
-SUMMARY:Projektowanie systemów informatycznych 1 - dr inż. M. Żabińska-Ra
- koczy\, D17 2.41 - wykład
+SUMMARY:Projektowanie systemów informatycznych 1 - dr inż. M. Żabińska-Rakoczy\, D17 2.41 - wykład
 DESCRIPTION:dr inż. M. Żabińska-Rakoczy\, D17 2.41 - wykład
 RRULE:FREQ=WEEKLY;UNTIL=20150130T000000
 UID:f89b12f2-4252-4f9e-b58d-b2746677b8f0
@@ -140,8 +136,7 @@ BEGIN:VEVENT
 DTSTAMP:20140930T183459Z
 DTSTART:20140924T111500
 DTEND:20140924T124500
-SUMMARY:Równania różniczkowe i różnicowe - prof. dr hab. inż. R. Schaefer
- \, D17 1.38 - wykład
+SUMMARY:Równania różniczkowe i różnicowe - prof. dr hab. inż. R. Schaefer \, D17 1.38 - wykład
 DESCRIPTION:prof. dr hab. inż. R. Schaefer\, D17 1.38 - wykład
 RRULE:FREQ=WEEKLY;UNTIL=20150130T000000
 UID:59a8efdb-cf65-4c33-a6c0-1f52e77c0b65
@@ -151,8 +146,7 @@ BEGIN:VEVENT
 DTSTAMP:20140930T183459Z
 DTSTART:20140922T111500
 DTEND:20140922T124500
-SUMMARY:Równania różniczkowe i różnicowe - dr hab. M. Paszyński\, D17 3.2
- 7e - lab
+SUMMARY:Równania różniczkowe i różnicowe - dr hab. M. Paszyński\, D17 3.27e - lab
 DESCRIPTION:dr hab. M. Paszyński\, D17 3.27e - lab
 RRULE:FREQ=WEEKLY;UNTIL=20150130T000000
 UID:40cac3b0-bdbc-4b3d-9713-61ea41342597
