@@ -19,6 +19,7 @@ GET         /tasks/edit/:id            controllers.Tasks.editForm(id: Long)
 POST        /tasks/edit/:id            controllers.Tasks.edit(id: Long)
 GET         /tasks/delete/:id          controllers.Tasks.delete(id: Long)
 GET         /calendar                  controllers.Calendar.index
+GET         /calendar/getCalendar      controllers.Calendar.getCalendar(from:String, to:String)
 GET         /about                     controllers.About.index
 
 # Map static resources from the /public folder to the /assets URL path

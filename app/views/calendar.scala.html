@@ -15,6 +15,7 @@
             editable: true,
             lang: 'en',
             eventLimit: true, // allow "more" link when too many events
+            /*
             events: [
                 {
                     title: 'Now',
@@ -29,6 +30,15 @@
                     title: 'End of semester',
                     start: '2015-01-30'
                 }
+            ] */
+
+            eventSources: [
+            {
+                url: '/calendar/getCalendar'
+                
+
+
+            }
             ]
         });
     });
