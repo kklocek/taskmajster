@@ -5,7 +5,7 @@
     @helper.form(action = id.map(routes.Tasks.edit(_)).getOrElse(routes.Tasks.addDeadline()), 'class -> "ink-form") {
         @helper.inputText(form("name"))
         @helper.select(form("priority"), models.tasks.Priority.possibleOptions)
-        @helper.inputDate(form("deadline"))
+        @helper.inputText(form("deadline"), 'type -> "datetime")
         @helper.checkbox(form("continuous"))
         @helper.inputText(form("length"), 'type -> "number", 'min -> 0, 'step -> "any")
 

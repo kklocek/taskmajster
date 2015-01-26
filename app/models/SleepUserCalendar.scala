@@ -14,7 +14,9 @@ class SleepUserCalendar(private val sleepStart: Int, private val sleepEnd: Int) 
 
   def parseCalendar(): Unit = {}
 
-  def getEvents(from: DateTime, to: DateTime): List[EventOccurrence] = {
+  def getEvents(froom: DateTime, too: DateTime): List[EventOccurrence] = {
+    val from = froom.withMillisOfDay(0) //Very nasty hack
+    val to = too.withMillisOfDay(0)
     def getEventsAcc(startDate: DateTime, acc: List[EventOccurrence]): List[EventOccurrence] = {
       if (startDate.compareTo(to) >= 0)
         acc

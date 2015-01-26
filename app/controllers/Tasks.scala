@@ -29,7 +29,7 @@ object Tasks extends Controller {
         } getOrElse Left(Seq(FormError(key, "error.priority", Nil)))
       } getOrElse Left(Seq(FormError(key, "error.required", Nil)))
 
-    def unbind(key: String, priority: Priority) = Map(key -> priority.toString)
+    def unbind(key: String, priority: Priority) = Map(key -> priority.value.toString)
   }
 
   implicit val periodFormatter = new Formatter[Period] {
@@ -47,7 +47,7 @@ object Tasks extends Controller {
   val deadlineForm = Form(mapping(
     "name" -> nonEmptyText,
     "priority" -> of[Priority],
-    "deadline" -> jodaDate,
+    "deadline" -> jodaDate("dd.MM.yyyy HH:mm"),
     "continuous" -> boolean,
     "length" -> of[Period]
   )(DeadlineTask.apply)(DeadlineTask.unapply))
