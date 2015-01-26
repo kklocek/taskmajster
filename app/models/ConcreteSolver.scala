@@ -16,26 +16,28 @@ class ConcreteSolver(private val tasks: List[Task], private val calendar: Multip
     val events = calendar.getEvents(from, to)
     val sortedEvents = events.sortWith((a, b) => a.dateFrom.compareTo(b.dateFrom) < 0) //Sort according to date
     //Not functional version
-    var solution: Map[Task, DateTime] = solveFunctional(tasks, sortedEvents)
+    val solution: Map[Task, (DateTime,DateTime)] = solveFunctional(tasks, sortedEvents)
     new Suggestion(solution) //TODO: Ask Adam about needing for Map[Task, From, To]
   }
 
-  private def solveFunctional(tasks: List[Task], calendar: List[EventOccurrence]): Map[Task, DateTime] = {
+  private def solveFunctional(tasks: List[Task], calendar: List[EventOccurrence]): Map[Task, (DateTime, DateTime)] = {
 
     @tailrec
-    def solveWithAcc(tasks: List[Task], calendar: List[EventOccurrence], acc: Map[Task, DateTime]): Map[Task, DateTime] = {
+    def solveWithAcc(tasks: List[Task], calendar: List[EventOccurrence], acc: Map[Task, (DateTime,DateTime)]): Map[Task, (DateTime, DateTime)] = {
       if (tasks.size == 0)
         acc
       else if (calendar.size == 1)
-        solveWithAcc(tasks.tail, List(new EventOccurrence(calendar.head.dateFrom, calendar.head.dateTo.plusDays(tasks.head.duration._1).plusMinutes(tasks.head.duration._2), calendar.head.desc)), acc.+((tasks.head, calendar.head.dateTo))) //...
+        solveWithAcc(tasks.tail, List(new EventOccurrence(calendar.head.dateFrom, calendar.head.dateTo.plusDays(tasks.head.duration._1).plusMinutes(tasks.head.duration._2), calendar.head.desc)), acc.+((tasks.head, (calendar.head.dateTo, calendar.head.dateTo.plusHours(tasks.head.duration._1))))) //...
+      else if(calendar.size == 0)
+          Map()
       else {
         if (calendar.head.dateTo.plusDays(tasks.head.duration._1).plusMinutes(tasks.head.duration._2).compareTo(calendar.tail.head.dateFrom) <= 0)
-          solveWithAcc(tasks.tail, calendar.tail, acc.+((tasks.head, calendar.head.dateTo)))
+          solveWithAcc(tasks.tail, calendar.tail, acc.+((tasks.head, (calendar.head.dateTo, calendar.head.dateTo.plusHours(tasks.head.duration._1)))))
         else
           solveWithAcc(tasks, calendar.tail, acc)
       }
     }
 
-    solveWithAcc(tasks, calendar, Map[Task, DateTime]())
+    solveWithAcc(tasks, calendar, Map[Task, (DateTime, DateTime)]())
   }
 }

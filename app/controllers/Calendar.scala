@@ -8,6 +8,8 @@ import play.api.libs.json.Json
 //Hardcode
 import play.Play
 import models.{MultipleUserCalendar, SleepUserCalendar, ICalUserCalendar}
+import models.tasks.Task
+
 
 object Calendar extends Controller {
 
@@ -26,6 +28,23 @@ object Calendar extends Controller {
     val dateStart:DateTime = dateFormatter.parseDateTime(start)
     val dateEnd:DateTime = dateFormatter.parseDateTime(end)
     val list = userCalendar.getEvents(dateStart, dateEnd).map(e => Json.obj("title" -> e.desc, "start" -> e.dateFrom.toString, "end" -> e.dateTo.toString))
+    Ok(Json.toJson(list))
+  }
+
+  def getTasks(start:String, end:String) = Action { implicit request =>
+    val tasks = Task.getAll
+    val multipleUserCalendar = new MultipleUserCalendar(userCalendar)
+
+    val solver = new ConcreteSolver(tasks, multipleUserCalendar)
+
+    val dateFormatter = DateTimeFormat.forPattern("YYYY-MM-dd")
+
+    val dateStart:DateTime = dateFormatter.parseDateTime(start)
+    val dateEnd:DateTime = dateFormatter.parseDateTime(end)
+
+    val suggestion = solver.solve(dateStart, dateEnd)
+    val list = suggestion.getSolution().toList.map(p => Json.obj("title" -> p._1.name, "start" -> p._2._1.toString, "end" -> p._2._2.toString))
+
     Ok(Json.toJson(list))
   }
 

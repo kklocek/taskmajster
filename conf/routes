@@ -3,24 +3,25 @@
 # ~~~~
 
 # Home page
-GET         /                          controllers.Application.index
-GET         /tasks                     controllers.Tasks.index
-GET         /tasks/add                 controllers.Tasks.add
+GET         /                            controllers.Application.index
+GET         /tasks                       controllers.Tasks.index
+GET         /tasks/add                   controllers.Tasks.add
 
-GET         /tasks/add/longterm        controllers.Tasks.addLongtermForm
-POST        /tasks/add/longterm        controllers.Tasks.addLongterm
-GET         /tasks/add/current         controllers.Tasks.addCurrentForm
-POST        /tasks/add/current         controllers.Tasks.addCurrent
-GET         /tasks/add/deadline        controllers.Tasks.addDeadlineForm
-POST        /tasks/add/deadline        controllers.Tasks.addDeadline
-GET         /tasks/add/frequent        controllers.Tasks.addFrequentForm
-POST        /tasks/add/frequent        controllers.Tasks.addFrequent
-GET         /tasks/edit/:id            controllers.Tasks.editForm(id: Long)
-POST        /tasks/edit/:id            controllers.Tasks.edit(id: Long)
-GET         /tasks/delete/:id          controllers.Tasks.delete(id: Long)
-GET         /calendar                  controllers.Calendar.index
-GET         /calendar/getCalendar      controllers.Calendar.getCalendar(start:String, end:String)
-GET         /about                     controllers.About.index
+GET         /tasks/add/longterm          controllers.Tasks.addLongtermForm
+POST        /tasks/add/longterm          controllers.Tasks.addLongterm
+GET         /tasks/add/current           controllers.Tasks.addCurrentForm
+POST        /tasks/add/current           controllers.Tasks.addCurrent
+GET         /tasks/add/deadline          controllers.Tasks.addDeadlineForm
+POST        /tasks/add/deadline          controllers.Tasks.addDeadline
+GET         /tasks/add/frequent          controllers.Tasks.addFrequentForm
+POST        /tasks/add/frequent          controllers.Tasks.addFrequent
+GET         /tasks/edit/:id              controllers.Tasks.editForm(id: Long)
+POST        /tasks/edit/:id              controllers.Tasks.edit(id: Long)
+GET         /tasks/delete/:id            controllers.Tasks.delete(id: Long)
+GET         /calendar                    controllers.Calendar.index
+GET         /calendar/getCalendar        controllers.Calendar.getCalendar(start:String, end:String)
+GET         /calendar/getTasks           controllers.Calendar.getTasks(start:String, end:String)
+GET         /about                       controllers.About.index
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file              controllers.Assets.at(path="/public", file)
+GET         /assets/*file                controllers.Assets.at(path="/public", file)
