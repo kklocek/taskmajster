@@ -7,12 +7,14 @@ import play.api.mvc._
 import play.api.libs.json.Json
 //Hardcode
 import play.Play
-import models.ICalUserCalendar
+import models.{MultipleUserCalendar, SleepUserCalendar, ICalUserCalendar}
 
 object Calendar extends Controller {
 
   val path = Play.application().path().getAbsolutePath + "/test/schedule.ics"
-  val userCalendar = new ICalUserCalendar(path)
+  val icalCalendar = new ICalUserCalendar(path)
+  val sleepCalendar = new SleepUserCalendar(23, 7)
+  val userCalendar = new MultipleUserCalendar(icalCalendar, sleepCalendar)
   def index = Action { implicit request =>
     Ok(views.html.calendar())
   }
