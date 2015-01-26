@@ -1,8 +1,10 @@
 package controllers
 
-import org.joda.time.DateTime
+import org.joda.time._
+import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
 import play.api._
 import play.api.mvc._
+import play.api.libs.json.Json
 //Hardcode
 import play.Play
 import models.ICalUserCalendar
@@ -15,11 +17,14 @@ object Calendar extends Controller {
     Ok(views.html.calendar())
   }
 
-  def getCalendar(from:String, to:String) = Action { implicit request =>
+  def getCalendar(start:String, end:String) = Action { implicit request =>
     //formatter?
-    val dateStart:DateTime = new DateTime(from)
-    val dateEnd:DateTime = new DateTime(to)
-    Ok(userCalendar.getEvents(dateStart, dateEnd))
+    val dateFormatter = DateTimeFormat.forPattern("YYYY-MM-dd")
+
+    val dateStart:DateTime = dateFormatter.parseDateTime(start)
+    val dateEnd:DateTime = dateFormatter.parseDateTime(end)
+    val list = userCalendar.getEvents(dateStart, dateEnd).map(e => Json.obj("title" -> e.desc, "start" -> e.dateFrom.toString, "end" -> e.dateTo.toString))
+    Ok(Json.toJson(list))
   }
 
 }
