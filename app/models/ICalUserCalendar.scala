@@ -27,7 +27,7 @@ class ICalUserCalendar(private val path: String) extends UserCalendar {
   }
 
   //Collection pipeline pattern, yeah
-  def getEvents(from: DateTime, to: DateTime): List[EventOccurrence] = events.filter(a => a.compareDates(from, to)).map(a => new EventOccurrence(a.from, a.to, a.desc))
+  def getEvents(from: DateTime, to: DateTime): List[EventOccurrence] = events.filter(a => a.compareDates(from, to)).map(a => a.getEventOccurrence(from, to)).flatten
 
 
   //Converts from iCal event to app CalendarEvent list

@@ -2,6 +2,8 @@ package models
 
 import org.joda.time.{Period, DateTime}
 
+import scala.annotation.tailrec
+
 /**
  * Created by Konrad on 2014-12-26.
  * CalendarEvent is a task in calendar
@@ -22,6 +24,49 @@ class CalendarEvent(val desc: String, val from: DateTime, val to: DateTime, val 
       case None => false
     }
     res
+  }
+
+  //Returns list of occurrences of calendar event in some period of time
+  def getEventOccurrence(from:DateTime, to:DateTime):List[EventOccurrence] = {
+
+    //For countable events
+    @tailrec
+    def getPeriodCountableEventOccurrence(date:DateTime, counter:Int, acc:List[EventOccurrence]):List[EventOccurrence] = {
+      if(counter == 0)
+        acc
+      else {
+        val x = nextOccurrence(date)
+        x match {
+          case None => acc
+          case Some(p) =>
+            if(p.dateTo.compareTo(to) > 0)
+              acc
+            else
+              getPeriodCountableEventOccurrence(date.plusDays(mapInterval(freq)), counter - 1, p :: acc)
+        }
+      }
+    }
+
+    //For interval events
+    @tailrec
+    def getPeriodIntervalEventOccurrence(date:DateTime, acc:List[EventOccurrence]):List[EventOccurrence] = {
+      val x = nextOccurrence(date)
+      x match {
+        case None => acc
+        case Some(p) =>
+          if (p.dateTo.compareTo(to) > 0)
+            acc
+          else
+            getPeriodIntervalEventOccurrence(date.plusDays(mapInterval(freq)), p :: acc)
+      }
+    }
+
+    if(!isFrequent)
+      List(new EventOccurrence(this.from, this.to, this.desc))
+    else if(count > 0)
+      getPeriodCountableEventOccurrence(from, count, List())
+    else
+      getPeriodIntervalEventOccurrence(from, List())
   }
 
   //Returns next event occurrence after @date parameter

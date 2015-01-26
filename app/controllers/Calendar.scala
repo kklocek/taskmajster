@@ -18,7 +18,7 @@ object Calendar extends Controller {
   }
 
   def getCalendar(start:String, end:String) = Action { implicit request =>
-    //formatter?
+    //date are in ISO-8601 format, so we need formatter
     val dateFormatter = DateTimeFormat.forPattern("YYYY-MM-dd")
 
     val dateStart:DateTime = dateFormatter.parseDateTime(start)
