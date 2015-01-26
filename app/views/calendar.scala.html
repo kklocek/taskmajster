@@ -12,26 +12,9 @@
                 right: 'month,agendaWeek,agendaDay'
             },
             defaultDate: new Date(),
-            editable: true,
+            editable: false,
             lang: 'en',
             eventLimit: true, // allow "more" link when too many events
-            /*
-            events: [
-                {
-                    title: 'Now',
-                    start: new Date( )
-                },
-                {
-                    title: 'Call',
-                    start: '2015-01-11T22:07:00',
-                    end: '2015-01-11T23:57:00'
-                },
-                {
-                    title: 'End of semester',
-                    start: '2015-01-30'
-                }
-            ] */
-
             eventSources: [
             {
                 url: '/calendar/getCalendar'

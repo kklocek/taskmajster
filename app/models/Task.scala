@@ -2,6 +2,7 @@ package models.tasks
 
 import org.joda.time.{Period, DateTime}
 import play.api.db.DB
+import play.api.libs.json.Json
 
 class Priority (val value: Int) {
   override def toString = Priority.stringify(value)
@@ -115,7 +116,11 @@ class DeadlineTask private[tasks] (id: Option[Long], name: String, priority: Pri
 
   private[tasks] def this (id: Option[Long], name: String, priority: Priority,
                            createdDate: DateTime, extraData: String) {
-    this(id, name, priority, createdDate, DateTime.now, true, Period.hours(1)) //TODO: extract data from string
+    this(id, name, priority, createdDate, null, false, null)
+    val json = Json.parse(extraData)
+    deadline = (json \ "deadline").as[DateTime]
+    continuous = (json \ "continuous").as[Boolean]
+    length = Period.seconds((json \ "length").as[Int])
   }
 
   def this(name: String, priority: Priority, deadline: DateTime, continuous: Boolean, length: Period) {
@@ -123,7 +128,7 @@ class DeadlineTask private[tasks] (id: Option[Long], name: String, priority: Pri
   }
 
   override def nextDoability(lastTimeDone: Option[DateTime]) = new DoabilityInterval(None, Some(deadline))
-  override def extraData: String = "Foo" //TODO: encode data into string
+  override def extraData: String  = Json.stringify(Json.obj("deadline" -> deadline, "continuous" -> continuous, "length" -> length.toStandardSeconds.getSeconds))
 }
 
 object DeadlineTask {
@@ -138,7 +143,11 @@ class FrequentTask private[tasks] (id: Option[Long], name: String, priority: Pri
 
   private[tasks] def this (id: Option[Long], name: String, priority: Priority,
                            createdDate: DateTime, extraData: String) {
-    this(id, name, priority, createdDate, Period.weeks(1), true, Period.hours(1)) //TODO: extract data from string
+    this(id, name, priority, createdDate, null, false, null)
+    val json = Json.parse(extraData)
+    frequency = Period.seconds((json \ "frequency").as[Int])
+    continuous = (json \ "continuous").as[Boolean]
+    length = Period.seconds((json \ "length").as[Int])
   }
 
   def this(name: String, priority: Priority, frequency: Period, continuous: Boolean, length: Period) {
@@ -149,7 +158,7 @@ class FrequentTask private[tasks] (id: Option[Long], name: String, priority: Pri
     // TODO write sensible implementation
     new DoabilityInterval(Some(DateTime.now), Some(DateTime.now plus frequency))
   }
-  override def extraData: String = "Bar" //TODO: encode data into string
+  override def extraData: String  = Json.stringify(Json.obj("frequency" -> frequency.toStandardSeconds.getSeconds, "continuous" -> continuous, "length" -> length.toStandardSeconds.getSeconds))
 }
 
 object FrequentTask {
@@ -164,7 +173,10 @@ class CurrentTask private[tasks] (id: Option[Long], name: String, priority: Prio
 
   private[tasks] def this (id: Option[Long], name: String, priority: Priority,
                            createdDate: DateTime, extraData: String) {
-    this(id, name, priority, createdDate, true, Period.hours(1)) //TODO: extract data from string
+    this(id, name, priority, createdDate, false, null)
+    val json = Json.parse(extraData)
+    continuous = (json \ "continuous").as[Boolean]
+    length = Period.seconds((json \ "length").as[Int])
   }
 
   def this(name: String, priority: Priority, continuous: Boolean, length: Period) {
@@ -172,7 +184,7 @@ class CurrentTask private[tasks] (id: Option[Long], name: String, priority: Prio
   }
 
   override def nextDoability(lastTimeDone: Option[DateTime]) = new DoabilityInterval(Some(createdDate), None)
-  override def extraData: String = "Buz" //TODO: encode data into string
+  override def extraData: String = Json.stringify(Json.obj("continuous" -> continuous, "length" -> length.toStandardSeconds.getSeconds))
 }
 
 object CurrentTask {

@@ -7,7 +7,7 @@
         @helper.select(form("priority"), models.tasks.Priority.possibleOptions)
         @helper.inputDate(form("deadline"))
         @helper.checkbox(form("continuous"))
-        @helper.inputText(form("length"), 'type -> "number", 'min -> 0)
+        @helper.inputText(form("length"), 'type -> "number", 'min -> 0, 'step -> "any")
 
         <button class="ink-button green" type="submit">Add deadline task</button>
     }

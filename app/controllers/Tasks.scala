@@ -36,11 +36,11 @@ object Tasks extends Controller {
     def bind(key: String, data: Map[String, String]) =
       data.get(key) map { value =>
         Try {
-          Right(Period.hours(value.toInt))
+          Right(Period.seconds((value.toDouble*3600).toInt))
         } getOrElse Left(Seq(FormError(key, "error.period", Nil)))
       } getOrElse Left(Seq(FormError(key, "error.required", Nil)))
 
-    def unbind(key: String, period: Period) = Map(key -> period.getHours.toString)
+    def unbind(key: String, period: Period) = Map(key -> (period.toStandardSeconds.getSeconds.toDouble/3600).toString)
   }
 
 
