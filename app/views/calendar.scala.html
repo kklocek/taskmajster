@@ -12,15 +12,18 @@
                 right: 'month,agendaWeek,agendaDay'
             },
             defaultDate: new Date(),
+            defaultView: 'agendaWeek',
             editable: false,
             lang: 'en',
             eventLimit: true, // allow "more" link when too many events
             eventSources: [
             {
-                url: '/calendar/getCalendar'
+                url: '/calendar/getCalendar',
+                color: '#3A87AD'
             },
             {
-                url: '/calendar/getTasks'
+                url: '/calendar/getTasks',
+                color: '#ADA63A'
             }
             ]
         });
