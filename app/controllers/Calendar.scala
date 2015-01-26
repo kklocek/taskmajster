@@ -7,7 +7,7 @@ import play.api.mvc._
 import play.api.libs.json.Json
 //Hardcode
 import play.Play
-import models.{MultipleUserCalendar, SleepUserCalendar, ICalUserCalendar}
+import models.{MultipleUserCalendar, SleepUserCalendar, ICalUserCalendar, Solver, ConcreteSolver}
 import models.tasks.Task
 
 
@@ -33,9 +33,7 @@ object Calendar extends Controller {
 
   def getTasks(start:String, end:String) = Action { implicit request =>
     val tasks = Task.getAll
-    val multipleUserCalendar = new MultipleUserCalendar(userCalendar)
-
-    val solver = new ConcreteSolver(tasks, multipleUserCalendar)
+    val solver = new ConcreteSolver(tasks, userCalendar)
 
     val dateFormatter = DateTimeFormat.forPattern("YYYY-MM-dd")
 
