@@ -1,0 +1,11 @@
+@(loginForm:Form[LoginData])(implicit flash: Flash)
+@main("Log in", "login") {
+
+    @helper.form(action = routes.Login.log()) {
+        @helper.inputText(loginForm("login"))
+        @helper.inputText(loginForm("password"))
+
+        <button type="submit">Log in!</button>
+    }
+
+}

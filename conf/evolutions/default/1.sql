@@ -14,7 +14,16 @@ CREATE TABLE users (
     name VARCHAR UNIQUE
 );
 
+CREATE TABLE registered_users (
+  login VARCHAR UNIQUE,
+  mail VARCHAR,
+  password VARCHAR
+);
+
+
+
 # --- !Downs
 
 DROP TABLE IF EXISTS tasks;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS registered_users;

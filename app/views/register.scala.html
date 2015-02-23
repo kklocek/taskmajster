@@ -1,0 +1,11 @@
+@(registerForm:Form[RegisterData])(implicit flash: Flash)
+@main("Register", "register") {
+
+        @helper.form(action = routes.Register.addUser()) {
+            @helper.inputText(registerForm("login"))
+            @helper.inputText(registerForm("mail"))
+            @helper.inputText(registerForm("password"))
+
+            <button type="submit">Add user!</button>
+        }
+}
