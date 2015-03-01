@@ -3,7 +3,7 @@
 
     @helper.form(action = routes.Login.log()) {
         @helper.inputText(loginForm("login"))
-        @helper.inputText(loginForm("password"))
+        @helper.inputPassword(loginForm("password"))
 
         <button type="submit">Log in!</button>
     }

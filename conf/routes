@@ -28,5 +28,6 @@ GET         /user/create                 controllers.Register.addUser
 
 GET         /login                       controllers.Login.index
 GET         /login/log                   controllers.Login.log
+GET         /login/logout                controllers.Login.logout
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                controllers.Assets.at(path="/public", file)

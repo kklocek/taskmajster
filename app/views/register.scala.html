@@ -4,7 +4,7 @@
         @helper.form(action = routes.Register.addUser()) {
             @helper.inputText(registerForm("login"))
             @helper.inputText(registerForm("mail"))
-            @helper.inputText(registerForm("password"))
+            @helper.inputPassword(registerForm("password"))
 
             <button type="submit">Add user!</button>
         }

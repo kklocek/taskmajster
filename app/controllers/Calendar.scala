@@ -18,7 +18,12 @@ object Calendar extends Controller {
   val sleepCalendar = new SleepUserCalendar(23, 7)
   val userCalendar = new MultipleUserCalendar(icalCalendar, sleepCalendar)
   def index = Action { implicit request =>
-    Ok(views.html.calendar())
+    //Ok(views.html.calendar())
+    request.session.get("login").map {
+      user => Ok(views.html.calendar())
+    }.getOrElse {
+      Redirect(routes.Application.index()).flashing("error" -> "You have to log in firstly")
+    }
   }
 
   def getCalendar(start:String, end:String) = Action { implicit request =>

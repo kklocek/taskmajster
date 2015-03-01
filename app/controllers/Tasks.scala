@@ -14,7 +14,12 @@ import scala.util.Try
 object Tasks extends Controller {
 
   def index = Action { implicit request =>
-    Ok(views.html.tasks.list(Task.getAll))
+    //Ok(views.html.tasks.list(Task.getAll))
+    request.session.get("login").map {
+      user => Ok(views.html.tasks.list(Task.getAll))
+    }.getOrElse {
+      Redirect(routes.Application.index()).flashing("error" -> "You have to log in firstly")
+    }
   }
 
   def add = Action { implicit request =>
